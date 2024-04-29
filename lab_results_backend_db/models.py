@@ -19,6 +19,8 @@ class Mouse(models.Model):
     name = models.CharField(max_length=100)
     status = models.CharField(max_length=50)  # dead, alive, sacrificed
     updated_at = models.CharField(max_length=50, default="")
+    treatment_start = models.CharField(max_length=50, default="")
+    first_screening = models.CharField(max_length=50, default="")
     # Add other fields as needed
 
 

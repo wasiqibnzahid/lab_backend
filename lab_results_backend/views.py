@@ -207,7 +207,8 @@ class Ivis(View):
                 date = pd.to_datetime(daterow[column],  format='%m/%d/%Y')
                 date = int(date.timestamp()) * 1000
                 value = row[column]
-                print(f"TP IS {type(value)} {value} {type(value) is not int and type(value) is not float}")
+                print(f"TP IS {type(value)} {value} {type(value)
+                      is not int and type(value) is not float}")
                 if ((type(value) is not int and type(value) is not float) or math.isnan(value)):
                     continue
                 print(f"I AM HERE")
@@ -275,6 +276,25 @@ class Mice(View):
         print(f"MICE ARE {mice}")
         for mouse in mice:
             Mouse.objects.filter(pk=mouse['id']).update(
-                status=mouse['status'], updated_at=mouse['updated_at'])
+                status=mouse['status'], updated_at=mouse['updated_at'], treatment_start=mouse['treatment_start'], first_screening=mouse['first_screening'])
+
+        return JsonResponse({"status": "success"})
+
+
+class Update(View):
+    def post(self, request: HttpRequest, *args, **kwargs):
+        payload = json.loads(request.body)
+        type = payload['type']
+        data = payload['data']
+        if (type == 'ivis'):
+            for item in data:
+                id = mouse_id_map[item['name']]
+                IvisData.objects.update_or_create(
+                    identifier=item['name'], week=item['date'], defaults={"value": round(item['value'], 2)}, mouse=id)
+        else:
+            for item in data:
+                id = mouse_id_map[item['name']]
+                TumorVolume.objects.update_or_create(
+                    identifier=item['name'], week=item['date'], defaults={"volume": round(item['value'], 2)}, mouse=id)
 
         return JsonResponse({"status": "success"})
