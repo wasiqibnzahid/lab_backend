@@ -207,8 +207,6 @@ class Ivis(View):
                 date = pd.to_datetime(daterow[column],  format='%m/%d/%Y')
                 date = int(date.timestamp()) * 1000
                 value = row[column]
-                print(f"TP IS {type(value)} {value} {type(value)
-                      is not int and type(value) is not float}")
                 if ((type(value) is not int and type(value) is not float) or math.isnan(value)):
                     continue
                 print(f"I AM HERE")
