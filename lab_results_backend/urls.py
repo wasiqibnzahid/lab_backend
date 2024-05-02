@@ -22,7 +22,7 @@ Including another URLconf
 # ]
 
 from django.urls import path
-from .views import Tumor, Ivis, PilotView, GroupView, Combined, Mice, Update
+from .views import Tumor, Ivis, PilotView, GroupView, Combined, Mice, Update, Metrics
 
 urlpatterns = [
     path('tumor', Tumor.as_view(), name='tumor'),
@@ -31,5 +31,6 @@ urlpatterns = [
     path('group', GroupView.as_view(), name='group'),
     path('combined', Combined.as_view(), name="view"),
     path('mouse', Mice.as_view(), name="mice"),
-    path('update', Update.as_view(), name="update")
+    path('update', Update.as_view(), name="update"),
+    path('metrics', Metrics.as_view(), name="metrics")
 ]

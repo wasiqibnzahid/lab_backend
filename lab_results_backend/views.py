@@ -13,6 +13,7 @@ from django.http import JsonResponse, HttpRequest
 from lab_results_backend_db.models import TumorVolume, IvisData, Pilot, Group, Mouse
 import pandas as pd
 from django.views.decorators.csrf import csrf_exempt
+from .utils import calculate_metrics
 
 
 class Tumor(View):
@@ -103,11 +104,11 @@ class Tumor(View):
                 mouse_id = mouse_id_map[identL]
                 if (type(leftVol) is not str and math.isnan(leftVol) is False):
                     # TumorVolume()
-                    TumorVolume.objects.update_or_create(
+                    TumorVolume.objects.get_or_create(
                         identifier=identL, week=date, defaults={"volume": round(leftVol, 2)}, mouse=mouse_id)
                 if (type(rightVol) is not str and math.isnan(rightVol) is False):
                     # TumorVolume()
-                    TumorVolume.objects.update_or_create(
+                    TumorVolume.objects.get_or_create(
                         identifier=identR, week=date, defaults={"volume": round(rightVol, 2)}, mouse=mouse_id)
 
         return JsonResponse({
@@ -211,7 +212,7 @@ class Ivis(View):
                     continue
                 print(f"I AM HERE")
                 mouse_id = mouse_id_map[name]
-                IvisData.objects.update_or_create(
+                IvisData.objects.get_or_create(
                     identifier=name, week=date, defaults={"value": round(value, 2)}, mouse=mouse_id)
         return JsonResponse({
             "message": "Success"
@@ -278,6 +279,11 @@ class Mice(View):
 
         return JsonResponse({"status": "success"})
 
+
+class Metrics(View):
+    def get(self, request: HttpRequest, *args, **kwargs):
+        pilot_id = request.GET.get('pilot_id')
+        return JsonResponse(calculate_metrics(pilot_id))
 
 class Update(View):
     def post(self, request: HttpRequest, *args, **kwargs):
