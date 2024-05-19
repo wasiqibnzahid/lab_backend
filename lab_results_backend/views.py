@@ -271,7 +271,7 @@ class Mice(View):
         miceList = Mouse.objects.filter(group_id=group_id)
         return JsonResponse({
             "data": list(miceList.values()),
-            "description": group.description
+            "description": group
         })
 
     def post(self, request: HttpRequest, *args, **kwargs):
