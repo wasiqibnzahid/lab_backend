@@ -277,7 +277,7 @@ class Mice(View):
     def post(self, request: HttpRequest, *args, **kwargs):
         mice = json.loads(request.body)['mouse_data']
         desc = json.loads(request.body)['description']
-        Group.objects.filter(pk=mice[0]['id']).update(
+        Group.objects.filter(pk=mice[0]['group_id']).update(
             description=desc
         )
         for mouse in mice:
