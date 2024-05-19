@@ -268,7 +268,7 @@ class Mice(View):
     def get(self, request: HttpRequest, *args, **kwargs):
         group_id = request.GET.get("group_id")
         group = Group.objects.filter(pk=int(group_id))
-        miceList = Mouse.objects.filter(group_id=group_id)
+        miceList = Mouse.objects.get(group_id=group_id)
         return JsonResponse({
             "data": list(miceList.values()),
             "description": group
