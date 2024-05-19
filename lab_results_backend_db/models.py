@@ -13,6 +13,7 @@ class Group(models.Model):
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100, default="")
     started_at = models.CharField(max_length=100, default="")
+    description = models.CharField(max_length=255, default="")
     # Add other fields as needed
 
 
@@ -23,6 +24,7 @@ class Mouse(models.Model):
     updated_at = models.CharField(max_length=50, default="")
     treatment_start = models.CharField(max_length=50, default="")
     first_screening = models.CharField(max_length=50, default="")
+    date_of_birth = models.CharField(max_length=50, default="")
     # Add other fields as needed
 
 
