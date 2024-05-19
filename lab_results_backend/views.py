@@ -206,11 +206,13 @@ class Ivis(View):
                 continue
             for column in df.columns[2:]:
                 date = pd.to_datetime(daterow[column],  format='%m/%d/%Y')
-                date = int(date.timestamp()) * 1000
+                try:
+                    date = int(date.timestamp()) * 1000
+                except:
+                    continue
                 value = row[column]
                 if ((type(value) is not int and type(value) is not float) or math.isnan(value)):
                     continue
-                print(f"I AM HERE")
                 mouse_id = mouse_id_map[name]
                 IvisData.objects.get_or_create(
                     identifier=name, week=date, defaults={"value": round(value, 2)}, mouse=mouse_id)
@@ -265,17 +267,22 @@ class Combined(View):
 class Mice(View):
     def get(self, request: HttpRequest, *args, **kwargs):
         group_id = request.GET.get("group_id")
+        group = Group.objects.filter(pk=int(group_id))
         miceList = Mouse.objects.filter(group_id=group_id)
         return JsonResponse({
-            "data": list(miceList.values())
+            "data": list(miceList.values()),
+            "description": group
         })
 
     def post(self, request: HttpRequest, *args, **kwargs):
         mice = json.loads(request.body)['mouse_data']
-        print(f"MICE ARE {mice}")
+        desc = json.loads(request.body)['description']
+        Group.objects.filter(pk=mice[0]['id']).update(
+            description=desc
+        )
         for mouse in mice:
             Mouse.objects.filter(pk=mouse['id']).update(
-                status=mouse['status'], updated_at=mouse['updated_at'], treatment_start=mouse['treatment_start'], first_screening=mouse['first_screening'])
+                status=mouse['status'], updated_at=mouse['updated_at'], treatment_start=mouse['treatment_start'], first_screening=mouse['first_screening'], date_of_birth=mouse["date_of_birth"])
 
         return JsonResponse({"status": "success"})
 
@@ -284,6 +291,7 @@ class Metrics(View):
     def get(self, request: HttpRequest, *args, **kwargs):
         pilot_id = request.GET.get('pilot_id')
         return JsonResponse(calculate_metrics(pilot_id))
+
 
 class Update(View):
     def post(self, request: HttpRequest, *args, **kwargs):
